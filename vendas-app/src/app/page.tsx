@@ -1,11 +1,9 @@
-import Image from "next/image";
-import Componente from "./meu-componente"
+import { Layout } from "components";
 
 const Home: React.FC = () => {
   return (
     <div>
-      <h1>Menu</h1>
-      <Componente />
+      <Layout />
     </div>
   );
 }
