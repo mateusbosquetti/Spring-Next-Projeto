@@ -5,12 +5,17 @@ import { Layout, Input } from "components";
 import { useProdutoService } from "pasta/services";
 import { Produto } from "pasta/models/produtos";
 import { error } from "console";
+import { converterEmBigDecimal } from "pasta/util/money";
 
 export const CadastroProdutos: React.FC = () => {
 
     const service = useProdutoService()
     const [sku, setSku] = useState<string>('');
-    const [preco, setPreco] = useState<string>('');
+    const [preco, setPreco] = useState("");
+
+    const handlePrecoChange = (valor: string) => {
+        setPreco(valor);
+    };
     const [nome, setNome] = useState<string>('');
     const [descricao, setDescricao] = useState<string>('');
     const [id, setId] = useState<string | undefined>('');
@@ -20,7 +25,7 @@ export const CadastroProdutos: React.FC = () => {
         const produto: Produto = {
             id,
             sku,
-            preco: parseFloat(preco),
+            preco: converterEmBigDecimal(preco),
             nome,
             descricao
         }
@@ -74,10 +79,14 @@ export const CadastroProdutos: React.FC = () => {
                 <Input
                     label="Preço: *"
                     columnClasses="is-half"
-                    onChange={setPreco}
+                    onChange={handlePrecoChange}
                     value={preco}
                     placeholder="Insira o Preço do Produto"
-                    id="inputPreco" />
+                    id="inputPreco"
+                    currency
+                    maxLength={16}
+                />
+
 
             </div>
 
