@@ -1,25 +1,26 @@
 "use client";
 
 import { useState } from "react";
-import { Layout, Input } from "components";
+import { Layout, Input, Message } from "components";
 import { useProdutoService } from "pasta/services";
 import { Produto } from "pasta/models/produtos";
-import { error } from "console";
 import { converterEmBigDecimal } from "pasta/util/money";
+import { Alert } from "components/common/message";
 
 export const CadastroProdutos: React.FC = () => {
 
     const service = useProdutoService()
     const [sku, setSku] = useState<string>('');
     const [preco, setPreco] = useState("");
-
-    const handlePrecoChange = (valor: string) => {
-        setPreco(valor);
-    };
     const [nome, setNome] = useState<string>('');
     const [descricao, setDescricao] = useState<string>('');
     const [id, setId] = useState<string | undefined>('');
     const [cadastro, setCadastro] = useState<string | undefined>('');
+    const [ messages, setMessages ] = useState<Array<Alert>>([])
+
+    const handlePrecoChange = (valor: string) => {
+        setPreco(valor);
+    };
 
     const submit = () => {
         const produto: Produto = {
@@ -32,21 +33,25 @@ export const CadastroProdutos: React.FC = () => {
 
         if (id) {
             service.atualizar(produto)
-                .then(data => console.log("Atualizado"))
+                .then(data => setMessages([{
+                    texto: "Produto atualizado com sucesso", tipo: "success"
+                }]))
                 .catch(error => console.log(error))
         } else {
             service.salvar(produto)
                 .then(data => {
                     setId(data.id)
                     setCadastro(data.dataCadastro)
-                })
+                    setMessages([{
+                    texto: "Produto adicionado com sucesso", tipo: "success"
+                }])
+            })
                 .catch(error => console.log(error))
         }
     }
 
     return (
-        <Layout titulo="Produtos">
-
+        <Layout titulo="Produtos" mensagens={messages}>
             {id &&
                 <div className="columns">
                     <Input
