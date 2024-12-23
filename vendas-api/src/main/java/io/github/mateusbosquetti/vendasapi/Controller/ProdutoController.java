@@ -20,7 +20,23 @@ public class ProdutoController {
 
     @PostMapping
     public ResponseEntity<ProdutoResponseDTO> postProduto(@RequestBody ProdutoRequestDTO produto) {
-        return new ResponseEntity<>(service.adicionarProduto(produto), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(service.adicionarProduto(produto), HttpStatus.OK);
+        } catch (Error e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> putProduto(@RequestBody ProdutoRequestDTO produto, @PathVariable Integer id) {
+        try {
+            service.atualizarProduto(produto, id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Error e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+
     }
 
 }

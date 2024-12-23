@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 @AllArgsConstructor
 public class ProdutoService {
@@ -16,6 +18,15 @@ public class ProdutoService {
 
     public ProdutoResponseDTO adicionarProduto(ProdutoRequestDTO produtoRequestDTO) {
         return EntitytoDTO(repository.save(DTOtoEntity(produtoRequestDTO)));
+    }
+
+    public void atualizarProduto(ProdutoRequestDTO produtoRequestDTO, Integer id) {
+        Produto produtoAntigo = repository.findById(id).orElseThrow(NoSuchElementException::new);
+        Produto produtoAtual = DTOtoEntity(produtoRequestDTO);
+        produtoAtual.setId(id);
+        produtoAtual.setDataCadastro(produtoAntigo.getDataCadastro());
+
+        repository.save(produtoAtual);
     }
 
     public Produto DTOtoEntity(ProdutoRequestDTO produtoRequestDTO) {
