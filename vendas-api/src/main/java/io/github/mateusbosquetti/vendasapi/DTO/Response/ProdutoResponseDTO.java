@@ -1,28 +1,16 @@
-package io.github.mateusbosquetti.vendasapi.Entity;
+package io.github.mateusbosquetti.vendasapi.DTO.Response;
 
-import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "produto")
-public class Produto {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ProdutoResponseDTO {
     private Integer id;
-
-    @Column(name = "nome", length = 100)
     private String nome;
-
-    @Column(name = "descricao", length = 255)
     private String descricao;
-
-    @Column(name = "preco", precision = 16, scale = 2)
     private BigDecimal preco;
     private String sku;
 
-    public Produto(Integer id, String nome, String descricao, BigDecimal preco, String sku) {
+    public ProdutoResponseDTO(Integer id, String nome, String descricao, BigDecimal preco, String sku) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
@@ -30,12 +18,9 @@ public class Produto {
         this.sku = sku;
     }
 
-    public Produto() {
-    }
-
     @Override
     public String toString() {
-        return "Produto{" +
+        return "ProdutoResponseDTO{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
                 ", descricao='" + descricao + '\'' +
