@@ -8,6 +8,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     columnClasses?: string;
     currency?: boolean;
     value?: string;
+    error?: string;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -17,6 +18,7 @@ export const Input: React.FC<InputProps> = ({
     id,
     currency,
     value,
+    error,
     ...inputProps
 }) => {
 
@@ -43,6 +45,9 @@ export const Input: React.FC<InputProps> = ({
                     value={value} // Atualiza o valor do campo
                     onChange={onInputChange}
                 />
+                {error &&
+                    <p className="help is-danger">{ error }</p>
+                }
             </div>
         </div>
     );

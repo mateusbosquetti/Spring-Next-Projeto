@@ -6,6 +6,24 @@ import { useProdutoService } from "pasta/services";
 import { Produto } from "pasta/models/produtos";
 import { converterEmBigDecimal } from "pasta/util/money";
 import { Alert } from "components/common/message";
+import * as yup from 'yup'
+import { error } from "console";
+
+const requiredMessage = "Campo Obrigatório";
+
+const validationSchema = yup.object().shape({
+    sku: yup.string().trim().required(requiredMessage),
+    nome: yup.string().trim().required(requiredMessage),
+    descricao: yup.string().trim().required(requiredMessage),
+    preco: yup.number().required(requiredMessage).moreThan(0, "Valor deve ser maior que 0,00 (Zero)")
+})
+
+interface FormErros {
+    sku?: string;
+    preco?: string;
+    nome?: string;
+    descricao?: string;
+}
 
 export const CadastroProdutos: React.FC = () => {
 
@@ -16,7 +34,8 @@ export const CadastroProdutos: React.FC = () => {
     const [descricao, setDescricao] = useState<string>('');
     const [id, setId] = useState<string | undefined>('');
     const [cadastro, setCadastro] = useState<string | undefined>('');
-    const [ messages, setMessages ] = useState<Array<Alert>>([])
+    const [messages, setMessages] = useState<Array<Alert>>([]);
+    const [errors, setErrors] = useState<FormErros>({});
 
     const handlePrecoChange = (valor: string) => {
         setPreco(valor);
@@ -31,23 +50,34 @@ export const CadastroProdutos: React.FC = () => {
             descricao
         }
 
-        if (id) {
-            service.atualizar(produto)
-                .then(data => setMessages([{
-                    texto: "Produto atualizado com sucesso", tipo: "success"
-                }]))
-                .catch(error => console.log(error))
-        } else {
-            service.salvar(produto)
-                .then(data => {
-                    setId(data.id)
-                    setCadastro(data.dataCadastro)
-                    setMessages([{
-                    texto: "Produto adicionado com sucesso", tipo: "success"
-                }])
+        validationSchema.validate(produto).then(data => {
+            setErrors({})
+            if (id) {
+                service.atualizar(produto)
+                    .then(data => setMessages([{
+                        texto: "Produto atualizado com sucesso", tipo: "success"
+                    }]))
+                    .catch(error => console.log(error))
+            } else {
+                service.salvar(produto)
+                    .then(data => {
+                        setId(data.id)
+                        setCadastro(data.dataCadastro)
+                        setMessages([{
+                            texto: "Produto adicionado com sucesso", tipo: "success"
+                        }])
+                    })
+                    .catch(error => console.log(error))
+            }
+        }).catch(error => {
+            const field = error.path;
+            const message = error.message;
+            
+            setErrors({
+                [field]: message
             })
-                .catch(error => console.log(error))
-        }
+
+        })
     }
 
     return (
@@ -79,7 +109,9 @@ export const CadastroProdutos: React.FC = () => {
                     onChange={setSku}
                     value={sku}
                     placeholder="Insira o SKU do Produto"
-                    id="inputSku" />
+                    id="inputSku"
+                    error={errors.sku}
+                />
 
                 <Input
                     label="Preço: *"
@@ -90,6 +122,7 @@ export const CadastroProdutos: React.FC = () => {
                     id="inputPreco"
                     currency
                     maxLength={16}
+                    error={errors.preco}
                 />
 
 
@@ -103,7 +136,9 @@ export const CadastroProdutos: React.FC = () => {
                     onChange={setNome}
                     value={nome}
                     placeholder="Insira o Nome do Produto"
-                    id="inputNome" />
+                    id="inputNome"
+                    error={errors.nome}
+                />
 
             </div>
             <div className="columns">
@@ -112,6 +147,9 @@ export const CadastroProdutos: React.FC = () => {
                     <label className="label" htmlFor="inputDesc">Descricao: *</label>
                     <div className="control">
                         <textarea className="textarea" id="inputDesc" value={descricao} onChange={event => setDescricao(event.target.value)} placeholder="Insira a Descrição do Produto"></textarea>
+                        {errors.descricao &&
+                            <p className="help is-danger">{errors.descricao}</p>
+                        }
                     </div>
                 </div>
             </div>
