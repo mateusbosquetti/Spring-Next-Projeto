@@ -4,13 +4,14 @@ import io.github.mateusbosquetti.vendasapi.DTO.Request.ProdutoRequestDTO;
 import io.github.mateusbosquetti.vendasapi.DTO.Response.ProdutoResponseDTO;
 import io.github.mateusbosquetti.vendasapi.Entity.Produto;
 import io.github.mateusbosquetti.vendasapi.Repository.ProdutoRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class ProdutoService {
 
-    @Autowired
     private ProdutoRepository repository;
 
     public ProdutoResponseDTO adicionarProduto(ProdutoRequestDTO produtoRequestDTO) {

@@ -4,6 +4,7 @@ import io.github.mateusbosquetti.vendasapi.DTO.Request.ProdutoRequestDTO;
 import io.github.mateusbosquetti.vendasapi.DTO.Response.ProdutoResponseDTO;
 import io.github.mateusbosquetti.vendasapi.Entity.Produto;
 import io.github.mateusbosquetti.vendasapi.Service.ProdutoService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/produtos")
+@AllArgsConstructor
 public class ProdutoController {
 
-    @Autowired
     private ProdutoService service;
 
     @PostMapping
