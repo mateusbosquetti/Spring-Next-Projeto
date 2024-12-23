@@ -1,6 +1,7 @@
 "use client";
 
 import { Layout } from "components/layout"
+import { Loader } from "components/common";
 import Link from "next/link"
 import { TabelaProdutos } from "./tabela"
 import { Produto } from "pasta/models/produtos"
@@ -19,18 +20,14 @@ export const ListagemProdutos: React.FC = () => {
         return <Layout titulo="Produtos">Erro ao carregar os produtos.</Layout>;
     }
 
-    if (!result) {
-        return <Layout titulo="Produtos">Carregando...</Layout>;
-    }
-
     return (
         <Layout titulo="Produtos">
             <Link href="/cadastros/produtos">
                 <button className="button is-info">Novo</button>
             </Link>
             <br />
-
-            <TabelaProdutos produtos={result.data} />
+            <Loader show={!result} />
+            <TabelaProdutos produtos={result?.data || []} />
         </Layout>
     )
 
