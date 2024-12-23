@@ -39,10 +39,10 @@ const ProdutoRow: React.FC<ProdutoRowProps> = ({ produto }) => {
             <td>
                 <div className="field is-grouped">
                     <div className="control">
-                        <button className="button is-warning">Editar</button>
+                        <button className="button is-warning is-small is-rounded">Editar</button>
                     </div>
                     <div className="control">
-                        <button className="button is-danger">Deletar</button>
+                        <button className="button is-danger is-small is-rounded">Deletar</button>
                     </div>
                 </div>
             </td>

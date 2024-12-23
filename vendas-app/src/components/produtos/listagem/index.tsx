@@ -26,6 +26,7 @@ export const ListagemProdutos: React.FC = () => {
                 <button className="button is-info">Novo</button>
             </Link>
             <br />
+            <br />
             <Loader show={!result} />
             <TabelaProdutos produtos={result?.data || []} />
         </Layout>
