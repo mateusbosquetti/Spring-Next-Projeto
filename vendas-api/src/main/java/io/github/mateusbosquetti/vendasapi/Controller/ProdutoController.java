@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/produtos")
 @AllArgsConstructor
@@ -22,7 +24,7 @@ public class ProdutoController {
     public ResponseEntity<ProdutoResponseDTO> postProduto(@RequestBody ProdutoRequestDTO produto) {
         try {
             return new ResponseEntity<>(service.adicionarProduto(produto), HttpStatus.OK);
-        } catch (Error e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
@@ -32,11 +34,18 @@ public class ProdutoController {
         try {
             service.atualizarProduto(produto, id);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Error e) {
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+    }
 
-
+    @GetMapping
+    public ResponseEntity<List<ProdutoResponseDTO>> getProdutos() {
+        try {
+            return new ResponseEntity<>(service.buscarProdutos(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

@@ -8,6 +8,7 @@ import { converterEmBigDecimal } from "pasta/util/money";
 import { Alert } from "components/common/message";
 import * as yup from 'yup'
 import { error } from "console";
+import Link from "next/link";
 
 const requiredMessage = "Campo Obrigatório";
 
@@ -72,7 +73,7 @@ export const CadastroProdutos: React.FC = () => {
         }).catch(error => {
             const field = error.path;
             const message = error.message;
-            
+
             setErrors({
                 [field]: message
             })
@@ -159,7 +160,9 @@ export const CadastroProdutos: React.FC = () => {
                     <button onClick={submit} className="button is-link">{id ? "Atualizar" : "Salvar"}</button>
                 </div>
                 <div className="control">
-                    <button className="button is-link is-light">Voltar</button>
+                    <Link href="/consultas/produtos">
+                        <button className="button is-link is-light">Voltar</button>
+                    </Link>
                 </div>
             </div>
 

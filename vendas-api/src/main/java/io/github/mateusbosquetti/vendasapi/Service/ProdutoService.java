@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -27,6 +29,14 @@ public class ProdutoService {
         produtoAtual.setDataCadastro(produtoAntigo.getDataCadastro());
 
         repository.save(produtoAtual);
+    }
+
+    public List<ProdutoResponseDTO> buscarProdutos() {
+        return repository.findAll()
+                .stream()
+                .map(this::EntitytoDTO)
+                .toList();
+        //For each embutido
     }
 
     public Produto DTOtoEntity(ProdutoRequestDTO produtoRequestDTO) {

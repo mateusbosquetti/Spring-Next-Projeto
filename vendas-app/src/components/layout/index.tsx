@@ -11,9 +11,10 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = (props: LayoutProps) => {
     return (
-        <div>
+        <div className="app">
             <section className="main-content columns is-fullheight">
-                <Menu />    
+                <Menu />
+
                 <div className="container column is-10">
                     <div className="section">
                         <div className="card">
@@ -25,16 +26,15 @@ export const Layout: React.FC<LayoutProps> = (props: LayoutProps) => {
                             <div className="card-content">
                                 <div className="content">
                                     {props.mensagens &&
-                                        props.mensagens.map( (msg, index) => (<Message key={index} {...msg} />))
+                                        props.mensagens.map(msg => <Message key={msg.texto} {...msg} />)
                                     }
-                                    
+
                                     {props.children}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </section>
         </div>
     )
