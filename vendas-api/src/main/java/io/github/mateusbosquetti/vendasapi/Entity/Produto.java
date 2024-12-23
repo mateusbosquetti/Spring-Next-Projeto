@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "produto")
@@ -23,5 +24,13 @@ public class Produto {
     @Column(name = "preco", precision = 16, scale = 2)
     private BigDecimal preco;
     private String sku;
+
+    @Column(name = "data_cadastro")
+    private LocalDate dataCadastro;
+
+    @PrePersist
+    public void prePersist() {
+        setDataCadastro(LocalDate.now());
+    }
 
 }

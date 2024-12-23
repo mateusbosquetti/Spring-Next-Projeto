@@ -29,7 +29,13 @@ public class ProdutoService {
     }
 
     public ProdutoResponseDTO EntitytoDTO(Produto produto) {
-        return new ProdutoResponseDTO(produto.getId(), produto.getNome(), produto.getDescricao(), produto.getPreco(), produto.getSku());
+        return new ProdutoResponseDTO(
+                produto.getId(),
+                produto.getNome(),
+                produto.getDescricao(),
+                produto.getPreco(),
+                produto.getSku(),
+                produto.getDataCadastro());
     }
 
 }
