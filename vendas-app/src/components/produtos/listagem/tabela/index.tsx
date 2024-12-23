@@ -6,7 +6,7 @@ interface TabelaProdutosProps {
 
 export const TabelaProdutos: React.FC<TabelaProdutosProps> = ({ produtos }) => {
     return (
-        <table className="table is-striped is-hoverable">
+        <table className="table is-striped is-hoverable is-fullwidth">
             <thead>
                 <tr>
                     <th>Código</th>
@@ -18,7 +18,7 @@ export const TabelaProdutos: React.FC<TabelaProdutosProps> = ({ produtos }) => {
             </thead>
             <tbody>
                 {
-                    produtos.map( produto => <ProdutoRow key={produto.id} produto={produto} />)
+                    produtos.map(produto => <ProdutoRow key={produto.id} produto={produto} />)
                 }
             </tbody>
         </table>
@@ -32,13 +32,19 @@ interface ProdutoRowProps {
 const ProdutoRow: React.FC<ProdutoRowProps> = ({ produto }) => {
     return (
         <tr>
-            <td>{ produto.id }</td>
-            <td>{ produto.sku }</td>
-            <td>{ produto.nome }</td>
-            <td>{ produto.preco }</td>
+            <td>{produto.id}</td>
+            <td>{produto.sku}</td>
+            <td>{produto.nome}</td>
+            <td>{produto.preco}</td>
             <td>
-                <button className="button is-success">Editar</button>
-                <button className="button is-danger">Deletar</button>
+                <div className="field is-grouped">
+                    <div className="control">
+                        <button className="button is-warning">Editar</button>
+                    </div>
+                    <div className="control">
+                        <button className="button is-danger">Deletar</button>
+                    </div>
+                </div>
             </td>
         </tr>
     )
