@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 import { Layout, Input, Message } from "components";
 import { useProdutoService } from "pasta/services";
 import { Produto } from "pasta/models/produtos";
@@ -9,6 +9,8 @@ import { Alert } from "components/common/message";
 import * as yup from 'yup'
 import { error } from "console";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 const requiredMessage = "Campo Obrigatório";
 
@@ -37,6 +39,25 @@ export const CadastroProdutos: React.FC = () => {
     const [cadastro, setCadastro] = useState<string | undefined>('');
     const [messages, setMessages] = useState<Array<Alert>>([]);
     const [errors, setErrors] = useState<FormErros>({});
+
+    const searchParams = useSearchParams();
+    const idURL = searchParams.get("id");
+
+    useEffect( () => {
+        if(idURL) {
+            service.carregarProduto(idURL)
+            .then(data => {
+                console.log(data)
+                setId(data.id)
+                setSku(data.sku)
+                setNome(data.nome)
+                setDescricao(data.descricao)
+                setCadastro(data.dataCadastro)
+                setPreco(data.preco)
+            })
+        }
+
+    }, [idURL])
 
     const handlePrecoChange = (valor: string) => {
         setPreco(valor);

@@ -1,10 +1,18 @@
+import { on } from "events";
 import { Produto } from "pasta/models/produtos"
 
 interface TabelaProdutosProps {
     produtos: Array<Produto>;
+    onEdit: (produto: Produto) => void;
+    onDelete: (produto: Produto) => void;
 }
 
-export const TabelaProdutos: React.FC<TabelaProdutosProps> = ({ produtos }) => {
+export const TabelaProdutos: React.FC<TabelaProdutosProps> = ({
+    produtos,
+    onDelete,
+    onEdit
+
+}) => {
     return (
         <table className="table is-striped is-hoverable is-fullwidth">
             <thead>
@@ -18,7 +26,12 @@ export const TabelaProdutos: React.FC<TabelaProdutosProps> = ({ produtos }) => {
             </thead>
             <tbody>
                 {
-                    produtos.map(produto => <ProdutoRow key={produto.id} produto={produto} />)
+                    produtos.map(produto => <ProdutoRow
+                        onDelete={onDelete}
+                        onEdit={onEdit}
+                        key={produto.id}
+                        produto={produto}
+                    />)
                 }
             </tbody>
         </table>
@@ -27,9 +40,15 @@ export const TabelaProdutos: React.FC<TabelaProdutosProps> = ({ produtos }) => {
 
 interface ProdutoRowProps {
     produto: Produto;
+    onEdit: (produto: Produto) => void;
+    onDelete: (produto: Produto) => void;
 }
 
-const ProdutoRow: React.FC<ProdutoRowProps> = ({ produto }) => {
+const ProdutoRow: React.FC<ProdutoRowProps> = ({
+    produto,
+    onDelete,
+    onEdit
+}) => {
     return (
         <tr>
             <td>{produto.id}</td>
@@ -39,10 +58,10 @@ const ProdutoRow: React.FC<ProdutoRowProps> = ({ produto }) => {
             <td>
                 <div className="field is-grouped">
                     <div className="control">
-                        <button className="button is-warning is-small is-rounded">Editar</button>
+                        <button onClick={e => onEdit(produto)} className="button is-warning is-small is-rounded">Editar</button>
                     </div>
                     <div className="control">
-                        <button className="button is-danger is-small is-rounded">Deletar</button>
+                        <button onClick={e => onDelete(produto)} className="button is-danger is-small is-rounded">Deletar</button>
                     </div>
                 </div>
             </td>

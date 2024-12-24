@@ -39,6 +39,15 @@ public class ProdutoService {
         //For each embutido
     }
 
+    public ProdutoResponseDTO buscarProdutoPeloId(Integer id) {
+        return EntitytoDTO(repository.findById(id).orElseThrow(NoSuchElementException::new));
+    }
+
+    public void excluirProduto(Integer id) {
+        buscarProdutoPeloId(id);
+        repository.deleteById(id);
+    }
+
     public Produto DTOtoEntity(ProdutoRequestDTO produtoRequestDTO) {
         Produto produtoEntidade = new Produto();
         produtoEntidade.setNome(produtoRequestDTO.getNome());

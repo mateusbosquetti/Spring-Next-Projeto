@@ -48,4 +48,22 @@ public class ProdutoController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ProdutoResponseDTO> getProdutoById(@PathVariable Integer id) {
+        try {
+            return new ResponseEntity<>(service.buscarProdutoPeloId(id), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProdutoById(@PathVariable Integer id) {
+        try {
+            service.excluirProduto(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 }
