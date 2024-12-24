@@ -23,16 +23,15 @@ export const useProdutoService = () => {
         return response.data;
     }
 
-    // const deletar = async (id) : Promise<void> => {
-    //     const url: string = `${resouceURL}/${id}`;
-    //     await httpCliente.delete(url);
-    // }
+    const deletar = async (id) : Promise<void> => {
+        const url: string = `${resouceURL}/${id}`;
+        await httpCliente.delete(url);
+    }
  
-
     return {
         salvar,
         atualizar,
         carregarProduto,
-        // deletar
+        deletar
     }
 }

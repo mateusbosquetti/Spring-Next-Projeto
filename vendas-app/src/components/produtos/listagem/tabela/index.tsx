@@ -1,5 +1,7 @@
-import { on } from "events";
+"use client";
+
 import { Produto } from "pasta/models/produtos"
+import { useState } from "react";
 
 interface TabelaProdutosProps {
     produtos: Array<Produto>;
@@ -13,6 +15,9 @@ export const TabelaProdutos: React.FC<TabelaProdutosProps> = ({
     onEdit
 
 }) => {
+
+
+
     return (
         <table className="table is-striped is-hoverable is-fullwidth">
             <thead>
@@ -49,6 +54,20 @@ const ProdutoRow: React.FC<ProdutoRowProps> = ({
     onDelete,
     onEdit
 }) => {
+
+    const [deletando, setDeletando] = useState<Boolean>(false);
+
+    const onDeleteClick = (produto: Produto) => {
+        if (deletando) {
+            onDelete(produto)
+            setDeletando(false)
+        } else {
+            setDeletando(true)
+        }
+    }
+
+    const cancelaDelete = () => setDeletando(false);
+
     return (
         <tr>
             <td>{produto.id}</td>
@@ -57,12 +76,21 @@ const ProdutoRow: React.FC<ProdutoRowProps> = ({
             <td>{produto.preco}</td>
             <td>
                 <div className="field is-grouped">
+
+                    {!deletando &&
+                        <div className="control">
+                            <button onClick={e => onEdit(produto)} className="button is-warning is-small is-rounded">Editar</button>
+                        </div>
+                    }
+
                     <div className="control">
-                        <button onClick={e => onEdit(produto)} className="button is-warning is-small is-rounded">Editar</button>
+                        <button onClick={e => onDeleteClick(produto)} className="button is-danger is-small is-rounded">{ deletando ? "Confirmar" : "Deletar"}</button>
                     </div>
-                    <div className="control">
-                        <button onClick={e => onDelete(produto)} className="button is-danger is-small is-rounded">Deletar</button>
-                    </div>
+                    {deletando &&
+                        <div className="control">
+                            <button onClick={cancelaDelete} className="button is-small is-rounded">Cancelar</button>
+                        </div>
+                    }
                 </div>
             </td>
         </tr>
