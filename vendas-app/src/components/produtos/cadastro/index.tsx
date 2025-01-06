@@ -128,7 +128,7 @@ export const CadastroProdutos: React.FC = () => {
                 <Input
                     label="SKU: *"
                     columnClasses="is-half"
-                    onChange={setSku}
+                    onChange={e => setSku(e.target.value)}
                     value={sku}
                     placeholder="Insira o SKU do Produto"
                     id="inputSku"
@@ -138,7 +138,7 @@ export const CadastroProdutos: React.FC = () => {
                 <Input
                     label="Preço: *"
                     columnClasses="is-half"
-                    onChange={handlePrecoChange}
+                    onChange={e => setPreco(e.target.value)}
                     value={preco}
                     placeholder="Insira o Preço do Produto"
                     id="inputPreco"
@@ -155,7 +155,7 @@ export const CadastroProdutos: React.FC = () => {
                 <Input
                     label="Nome: *"
                     columnClasses="is-full"
-                    onChange={setNome}
+                    onChange={e => setNome(e.target.value)}
                     value={nome}
                     placeholder="Insira o Nome do Produto"
                     id="inputNome"
