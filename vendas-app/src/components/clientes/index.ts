@@ -1,1 +1,0 @@
-export { CadastroCliente } from "./cadastro";
