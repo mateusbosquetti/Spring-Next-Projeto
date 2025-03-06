@@ -18,14 +18,14 @@ export const useClientService = () => {
         await httpCliente.put<Cliente>(url, cliente);
     }
 
-    const carregarCliente = async (cliente: Cliente) : Promise<Cliente> => {
-        const url: string = `${resouceURL}/${cliente.id}`;
+    const carregarCliente = async (id: string) : Promise<Cliente> => {
+        const url: string = `${resouceURL}/${id}`;
         const response: AxiosResponse<Cliente> = await httpCliente.get(url);
         return response.data;
     };
 
-    const deletar = async (cliente: Cliente) : Promise<void> {
-        const url: string = `${resouceURL}/${cliente.id}`;
+    const deletar = async (id: string) : Promise<void> => {
+        const url: string = `${resouceURL}/${id}`;
         await httpCliente.delete(url);
     };
 

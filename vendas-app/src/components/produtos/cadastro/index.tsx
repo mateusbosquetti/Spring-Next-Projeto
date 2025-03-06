@@ -31,10 +31,10 @@ interface FormErros {
 export const CadastroProdutos: React.FC = () => {
 
     const service = useProdutoService()
-    const [sku, setSku] = useState<string>('');
-    const [preco, setPreco] = useState("");
-    const [nome, setNome] = useState<string>('');
-    const [descricao, setDescricao] = useState<string>('');
+    const [sku, setSku] = useState<string | undefined>('');
+    const [preco, setPreco] = useState<any>("");
+    const [nome, setNome] = useState<string | undefined>('');
+    const [descricao, setDescricao] = useState<string | undefined>('');
     const [id, setId] = useState<string | undefined>('');
     const [cadastro, setCadastro] = useState<string | undefined>('');
     const [messages, setMessages] = useState<Array<Alert>>([]);

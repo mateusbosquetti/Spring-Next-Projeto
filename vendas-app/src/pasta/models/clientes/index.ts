@@ -6,5 +6,5 @@ export interface Cliente {
   endereco?: string;
   email?: string;
   telefone?: string;
-  cadastro?: string;
+  dataCadastro?: string;
 }
