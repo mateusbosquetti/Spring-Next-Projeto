@@ -1,9 +1,3 @@
-const ClientInitialPage: React.FC = () => {
-    return (
-    <div>
-        <h1>Pagina cadastro de clientes ainda não implementada</h1>
-    </div>
-    )
-}
+import { CadastroClientes } from "components"
 
-export default ClientInitialPage;
+export default CadastroClientes;
