@@ -67,11 +67,11 @@ export const CadastroClientes: React.FC = () => {
     const cliente: Cliente = {
       id,
       nome,
-      cpf,
-      nascimento,
+      cpf: removerMascaraCPF(cpf || ""),
+      nascimento: removerMascaraDataNascimento(nascimento || ""),
       endereco,
       email,
-      telefone,
+      telefone: removerMascaraTelefone(telefone || ""),
     };
 
     console.log(cliente);
@@ -118,6 +118,63 @@ export const CadastroClientes: React.FC = () => {
       });
   };
 
+  const formatarCPF = (value: string): string => {
+    // Remove tudo que não é dígito
+    const cpf = value.replace(/\D/g, "");
+
+    // Aplica a máscara: XXX.XXX.XXX-XX
+    return cpf
+      .replace(/(\d{3})(\d)/, "$1.$2") // Adiciona o primeiro ponto
+      .replace(/(\d{3})(\d)/, "$1.$2") // Adiciona o segundo ponto
+      .replace(/(\d{3})(\d{1,2})$/, "$1-$2"); // Adiciona o hífen
+  };
+
+  const removerMascaraCPF = (cpf: string) => {
+    return cpf.replace(/\D/g, ""); // Remove tudo que não é dígito
+  };
+
+  const formatarTelefone = (telefone: string): string => {
+    // Remove tudo que não é dígito
+    const numeros = telefone.replace(/\D/g, "");
+
+    // Aplica a máscara: (XX) XXXXX-XXXX
+    return numeros
+      .replace(/^(\d{2})(\d)/, "($1) $2") // Adiciona os parênteses e o espaço
+      .replace(/(\d{5})(\d)/, "$1-$2"); // Adiciona o hífen
+  };
+
+  const removerMascaraTelefone = (telefone: string): string => {
+    // Remove tudo que não é dígito
+    return telefone.replace(/\D/g, "");
+  };
+
+  const formatarDataNascimento = (data: string): string => {
+    // Remove tudo que não é dígito
+    const numeros = data.replace(/\D/g, "");
+
+    // Aplica a máscara: dd/MM/yyyy
+    return numeros
+      .replace(/^(\d{2})(\d)/, "$1/$2") // Adiciona a primeira barra
+      .replace(/^(\d{2})\/(\d{2})(\d)/, "$1/$2/$3") // Adiciona a segunda barra
+      .slice(0, 10); // Limita o tamanho máximo da string (10 caracteres)
+  };
+
+  const removerMascaraDataNascimento = (data: string): string => {
+    // Remove tudo que não é dígito
+    const numeros = data.replace(/\D/g, "");
+
+    // Verifica se a data está completa (8 dígitos: ddMMyyyy)
+    if (numeros.length === 8) {
+      const dia = numeros.slice(0, 2);
+      const mes = numeros.slice(2, 4);
+      const ano = numeros.slice(4, 8);
+      return `${ano}-${mes}-${dia}`; // Formato yyyy-MM-dd
+    }
+
+    // Retorna a data sem formatação se não estiver completa
+    return numeros;
+  };
+
   return (
     <Layout titulo="Clientes" mensagens={messages}>
       {id && (
@@ -155,7 +212,12 @@ export const CadastroClientes: React.FC = () => {
         <Input
           label="CPF: *"
           columnClasses="is-half"
-          onChange={(e) => setCpf(e.target.value)}
+          onChange={(e) => {
+            const valorFormatado = formatarCPF(e.target.value);
+            if (valorFormatado.length <= 14) {
+              setCpf(valorFormatado);
+            }
+          }}
           value={cpf}
           placeholder="Insira o CPF do Cliente"
           id="inputCpf"
@@ -165,7 +227,12 @@ export const CadastroClientes: React.FC = () => {
         <Input
           label="Data Nascimento: *"
           columnClasses="is-half"
-          onChange={(e) => setDataNascimento(e.target.value)}
+          onChange={(e) => {
+            const dataFormatada = formatarDataNascimento(e.target.value);
+            if (dataFormatada.length <= 10) {
+              setDataNascimento(dataFormatada);
+            }
+          }}
           value={nascimento}
           placeholder="Insira a Data de Nascimentodo Cliente"
           id="inputDataNascimento"
@@ -197,7 +264,12 @@ export const CadastroClientes: React.FC = () => {
         <Input
           label="Telefone: *"
           columnClasses="is-half"
-          onChange={(e) => setTelefone(e.target.value)}
+          onChange={(e) => {
+            const telefoneFormatado = formatarTelefone(e.target.value);
+            if (telefoneFormatado.length <= 15) {
+              setTelefone(telefoneFormatado);
+            }
+          }}
           value={telefone}
           placeholder="Insira o Telefone do Cliente"
           id="inputTelefone"
