@@ -4,6 +4,7 @@ import { Input } from "components/common";
 import { Layout } from "components/layout";
 import { useClientService } from "pasta/services";
 import { useState } from "react";
+import Button from '@mui/material/Button';
 
 interface ConsultaClientesForm {
   nome?: string;
@@ -26,6 +27,7 @@ export const ListagemClientes: React.FC = () => {
 
   return (
     <Layout titulo="Clientes">
+      <Button variant="contained">Hello world</Button>
       <form>
         <div className="columns">
           <Input
