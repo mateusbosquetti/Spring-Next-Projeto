@@ -284,7 +284,7 @@ export const CadastroClientes: React.FC = () => {
           </button>
         </div>
         <div className="control">
-          <Link href="/consultas/produtos">
+          <Link href="/consultas/clientes">
             <button className="button is-link is-light">Voltar</button>
           </Link>
         </div>

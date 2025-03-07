@@ -57,7 +57,7 @@ export const ListagemProdutos: React.FC = () => {
 
     return (
         <Layout titulo="Produtos" mensagens={messages}>
-
+            
             <Link href="/cadastros/produtos">
                 <button className="button is-info">Novo</button>
             </Link>

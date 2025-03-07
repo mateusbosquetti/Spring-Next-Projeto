@@ -3,10 +3,16 @@
 import { Input } from "components/common";
 import { Layout } from "components/layout";
 import { useClientService } from "pasta/services";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import useSWR from "swr";
+import { AxiosResponse } from "axios";
+import { Cliente } from "pasta/models/clientes";
+import { httpCliente } from "pasta/http";
+import Link from "next/link";
+import AddIcon from '@mui/icons-material/Add';
 
 
 const columns: GridColDef<(typeof rows)[number]>[] = [
@@ -160,13 +166,35 @@ const rows = [
 
 ];
 
+const fetcher = (url: string) => httpCliente.get(url);
+
 export const ListagemClientes: React.FC = () => {
+
+  const { data: result, error } = useSWR<AxiosResponse<Cliente[]>>(
+    "/api/clientes",
+    fetcher
+  );
+
+  if (error) {
+    return <Layout titulo="Produtos">Erro ao carregar os produtos.</Layout>;
+  }
+
+  const [lista, setLista] = useState<Cliente[]>([]);
+
+  useEffect(() => {
+    setLista(result?.data || [])
+  }, [result])
 
   return (
     <Layout titulo="Clientes">
+      <Link href="/cadastros/clientes">
+        <Button variant="contained" endIcon={<AddIcon />}>
+          Adicionar
+        </Button>
+      </Link>
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
-          rows={rows}
+          rows={lista.content}
           columns={columns}
           initialState={{
             pagination: {
