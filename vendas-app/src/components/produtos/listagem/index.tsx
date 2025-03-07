@@ -33,13 +33,15 @@ export const ListagemProdutos: React.FC = () => {
         {
             field: 'descricao',
             headerName: 'Descrição',
-            width: 150,
+            width: 300,
         },
         {
             field: 'preco',
             headerName: 'Preço',
             type: 'number',
             sortable: true,
+            align: "left",
+            headerAlign: "left",
             width: 150,
         },
 
@@ -47,7 +49,7 @@ export const ListagemProdutos: React.FC = () => {
             field: 'sku',
             headerName: 'SKU',
             sortable: false,
-            width: 200,
+            width: 150,
         },
         {
             field: 'dataCadastro',
