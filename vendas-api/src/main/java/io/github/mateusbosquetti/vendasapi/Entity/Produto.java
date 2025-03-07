@@ -1,6 +1,6 @@
-package io.github.mateusbosquetti.vendasapi.Entity;
+package io.github.mateusbosquetti.vendasapi.entity;
 
-import io.github.mateusbosquetti.vendasapi.DTO.Response.ProdutoResponseDTO;
+import io.github.mateusbosquetti.vendasapi.dto.response.ProdutoResponseDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

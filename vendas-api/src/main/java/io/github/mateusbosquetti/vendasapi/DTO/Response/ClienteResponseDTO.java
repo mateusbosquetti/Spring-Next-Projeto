@@ -1,9 +1,6 @@
-package io.github.mateusbosquetti.vendasapi.DTO.Response;
+package io.github.mateusbosquetti.vendasapi.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Column;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
 import java.time.LocalDate;
 

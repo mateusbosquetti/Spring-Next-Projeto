@@ -1,16 +1,12 @@
-package io.github.mateusbosquetti.vendasapi.Service;
+package io.github.mateusbosquetti.vendasapi.service;
 
-import io.github.mateusbosquetti.vendasapi.DTO.Request.ProdutoRequestDTO;
-import io.github.mateusbosquetti.vendasapi.DTO.Response.ProdutoResponseDTO;
-import io.github.mateusbosquetti.vendasapi.DTO.Response.ProdutoResponseDTO;
-import io.github.mateusbosquetti.vendasapi.Entity.Produto;
-import io.github.mateusbosquetti.vendasapi.Entity.Produto;
-import io.github.mateusbosquetti.vendasapi.Repository.ProdutoRepository;
+import io.github.mateusbosquetti.vendasapi.dto.request.ProdutoRequestDTO;
+import io.github.mateusbosquetti.vendasapi.dto.response.ProdutoResponseDTO;
+import io.github.mateusbosquetti.vendasapi.entity.Produto;
+import io.github.mateusbosquetti.vendasapi.repository.ProdutoRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 

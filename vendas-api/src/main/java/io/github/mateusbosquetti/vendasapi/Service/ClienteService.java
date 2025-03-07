@@ -1,17 +1,14 @@
-package io.github.mateusbosquetti.vendasapi.Service;
+package io.github.mateusbosquetti.vendasapi.service;
 
-import io.github.mateusbosquetti.vendasapi.DTO.Request.ClienteRequestDTO;
-import io.github.mateusbosquetti.vendasapi.DTO.Request.ClienteRequestDTO;
-import io.github.mateusbosquetti.vendasapi.DTO.Response.ClienteResponseDTO;
-import io.github.mateusbosquetti.vendasapi.Entity.Cliente;
-import io.github.mateusbosquetti.vendasapi.Entity.Cliente;
-import io.github.mateusbosquetti.vendasapi.Repository.ClienteRepository;
+import io.github.mateusbosquetti.vendasapi.dto.request.ClienteRequestDTO;
+import io.github.mateusbosquetti.vendasapi.dto.response.ClienteResponseDTO;
+import io.github.mateusbosquetti.vendasapi.entity.Cliente;
+import io.github.mateusbosquetti.vendasapi.repository.ClienteRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service

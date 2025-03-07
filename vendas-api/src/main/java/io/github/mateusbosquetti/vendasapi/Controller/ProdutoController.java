@@ -1,11 +1,9 @@
-package io.github.mateusbosquetti.vendasapi.Controller;
+package io.github.mateusbosquetti.vendasapi.controller;
 
-import io.github.mateusbosquetti.vendasapi.DTO.Request.ProdutoRequestDTO;
-import io.github.mateusbosquetti.vendasapi.DTO.Response.ProdutoResponseDTO;
-import io.github.mateusbosquetti.vendasapi.Entity.Produto;
-import io.github.mateusbosquetti.vendasapi.Service.ProdutoService;
+import io.github.mateusbosquetti.vendasapi.dto.request.ProdutoRequestDTO;
+import io.github.mateusbosquetti.vendasapi.dto.response.ProdutoResponseDTO;
+import io.github.mateusbosquetti.vendasapi.service.ProdutoService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,48 +21,28 @@ public class ProdutoController {
 
     @PostMapping
     public ResponseEntity<ProdutoResponseDTO> postProduto(@RequestBody @Validated ProdutoRequestDTO produto) {
-        try {
-            return new ResponseEntity<>(service.adicionarProduto(produto), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(service.adicionarProduto(produto), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> putProduto(@RequestBody @Validated ProdutoRequestDTO produto, @PathVariable Integer id) {
-        try {
-            service.atualizarProduto(produto, id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        service.atualizarProduto(produto, id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<List<ProdutoResponseDTO>> getProdutos() {
-        try {
-            return new ResponseEntity<>(service.buscarProdutos(), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(service.buscarProdutos(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProdutoResponseDTO> getProdutoById(@PathVariable Integer id) {
-        try {
-            return new ResponseEntity<>(service.buscarProdutoPeloId(id), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(service.buscarProdutoPeloId(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProdutoById(@PathVariable Integer id) {
-        try {
-            service.excluirProduto(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        service.excluirProduto(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

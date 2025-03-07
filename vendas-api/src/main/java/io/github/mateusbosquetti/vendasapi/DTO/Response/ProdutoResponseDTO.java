@@ -1,9 +1,7 @@
-package io.github.mateusbosquetti.vendasapi.DTO.Response;
+package io.github.mateusbosquetti.vendasapi.dto.response;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

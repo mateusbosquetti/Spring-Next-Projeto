@@ -1,8 +1,8 @@
-package io.github.mateusbosquetti.vendasapi.Controller;
+package io.github.mateusbosquetti.vendasapi.controller;
 
-import io.github.mateusbosquetti.vendasapi.DTO.Request.ClienteRequestDTO;
-import io.github.mateusbosquetti.vendasapi.DTO.Response.ClienteResponseDTO;
-import io.github.mateusbosquetti.vendasapi.Service.ClienteService;
+import io.github.mateusbosquetti.vendasapi.dto.request.ClienteRequestDTO;
+import io.github.mateusbosquetti.vendasapi.dto.response.ClienteResponseDTO;
+import io.github.mateusbosquetti.vendasapi.service.ClienteService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -23,49 +21,29 @@ public class ClienteController {
 
     @PostMapping
     public ResponseEntity<ClienteResponseDTO> postCliente(@RequestBody @Validated ClienteRequestDTO cliente) {
-        try {
-            return new ResponseEntity<>(service.adicionarCliente(cliente), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(service.adicionarCliente(cliente), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> putCliente(@RequestBody @Validated ClienteRequestDTO cliente, @PathVariable Integer id) {
-        try {
-            service.atualizarCliente(cliente, id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        service.atualizarCliente(cliente, id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<Page<ClienteResponseDTO>> getClientes(Pageable pageable) {
-        try {
-            return new ResponseEntity<>(service.buscarClientes(pageable), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(service.buscarClientes(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ClienteResponseDTO> getClienteById(@PathVariable Integer id) {
-        try {
-            return new ResponseEntity<>(service.buscarClientePeloId(id), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(service.buscarClientePeloId(id), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClienteById(@PathVariable Integer id) {
-        try {
-            service.excluirCliente(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        service.excluirCliente(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
