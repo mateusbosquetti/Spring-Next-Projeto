@@ -5,6 +5,8 @@ import io.github.mateusbosquetti.vendasapi.dto.response.ProdutoResponseDTO;
 import io.github.mateusbosquetti.vendasapi.entity.Produto;
 import io.github.mateusbosquetti.vendasapi.repository.ProdutoRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,12 +31,9 @@ public class ProdutoService {
         repository.save(produtoAtual);
     }
 
-    public List<ProdutoResponseDTO> buscarProdutos() {
-        return repository.findAll()
-                .stream()
-                .map(Produto::toDto)
-                .toList();
-        //For each embutido
+    public Page<ProdutoResponseDTO> buscarProdutos(Pageable pageable) {
+        return repository.findAll(pageable)
+                .map(Produto::toDto);
     }
 
     public ProdutoResponseDTO buscarProdutoPeloId(Integer id) {

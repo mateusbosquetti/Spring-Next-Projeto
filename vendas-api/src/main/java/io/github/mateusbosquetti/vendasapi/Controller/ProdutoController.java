@@ -4,6 +4,8 @@ import io.github.mateusbosquetti.vendasapi.dto.request.ProdutoRequestDTO;
 import io.github.mateusbosquetti.vendasapi.dto.response.ProdutoResponseDTO;
 import io.github.mateusbosquetti.vendasapi.service.ProdutoService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -31,8 +33,8 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProdutoResponseDTO>> getProdutos() {
-        return new ResponseEntity<>(service.buscarProdutos(), HttpStatus.OK);
+    public ResponseEntity<Page<ProdutoResponseDTO>> getProdutos(Pageable pageable) {
+        return new ResponseEntity<>(service.buscarProdutos(pageable), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

@@ -32,7 +32,7 @@ export const CadastroProdutos: React.FC = () => {
 
     const service = useProdutoService()
     const [sku, setSku] = useState<string | undefined>('');
-    const [preco, setPreco] = useState<any>("");
+    const [preco, setPreco] = useState<string | undefined>("");
     const [nome, setNome] = useState<string | undefined>('');
     const [descricao, setDescricao] = useState<string | undefined>('');
     const [id, setId] = useState<string | undefined>('');
@@ -43,35 +43,34 @@ export const CadastroProdutos: React.FC = () => {
     const searchParams = useSearchParams();
     const idURL = searchParams.get("id");
 
-    useEffect( () => {
-        if(idURL) {
+    useEffect(() => {
+        if (idURL) {
             service.carregarProduto(idURL)
-            .then(data => {
-                console.log(data)
-                setId(data.id)
-                setSku(data.sku)
-                setNome(data.nome)
-                setDescricao(data.descricao)
-                setCadastro(data.dataCadastro)
-                setPreco(data.preco)
-            })
+                .then(data => {
+                    console.log(data)
+                    setId(data.id)
+                    setSku(data.sku)
+                    setNome(data.nome)
+                    setDescricao(data.descricao)
+                    setCadastro(data.dataCadastro)
+                    setPreco(data.preco.toString()) // Converter para string
+                })
         }
-
     }, [idURL])
 
     const handlePrecoChange = (valor: string) => {
-        setPreco(valor);
+        setPreco(valor.toString());
     };
 
     const submit = () => {
         const produto: Produto = {
             id,
             sku,
-            preco: converterEmBigDecimal(preco),
+            preco: converterEmBigDecimal(preco.toString()), // Converter para string antes de converter para BigDecimal
             nome,
             descricao
         }
-
+    
         validationSchema.validate(produto).then(data => {
             setErrors({})
             if (id) {
@@ -94,11 +93,10 @@ export const CadastroProdutos: React.FC = () => {
         }).catch(error => {
             const field = error.path;
             const message = error.message;
-
+    
             setErrors({
                 [field]: message
             })
-
         })
     }
 

@@ -97,7 +97,7 @@ export const ListagemClientes: React.FC = () => {
   );
 
   if (error) {
-    return <Layout titulo="Produtos">Erro ao carregar os produtos.</Layout>;
+    return <Layout titulo="Clientes">Erro ao carregar os clientes.</Layout>;
   }
 
   const [lista, setLista] = useState<Cliente[]>([]);
