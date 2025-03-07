@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class ProdutoController {
     private ProdutoService service;
 
     @PostMapping
-    public ResponseEntity<ProdutoResponseDTO> postProduto(@RequestBody ProdutoRequestDTO produto) {
+    public ResponseEntity<ProdutoResponseDTO> postProduto(@RequestBody @Validated ProdutoRequestDTO produto) {
         try {
             return new ResponseEntity<>(service.adicionarProduto(produto), HttpStatus.OK);
         } catch (Exception e) {
@@ -30,7 +31,7 @@ public class ProdutoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> putProduto(@RequestBody ProdutoRequestDTO produto, @PathVariable Integer id) {
+    public ResponseEntity<Void> putProduto(@RequestBody @Validated ProdutoRequestDTO produto, @PathVariable Integer id) {
         try {
             service.atualizarProduto(produto, id);
             return new ResponseEntity<>(HttpStatus.OK);

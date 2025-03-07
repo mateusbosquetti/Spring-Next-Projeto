@@ -4,8 +4,11 @@ import io.github.mateusbosquetti.vendasapi.DTO.Request.ClienteRequestDTO;
 import io.github.mateusbosquetti.vendasapi.DTO.Response.ClienteResponseDTO;
 import io.github.mateusbosquetti.vendasapi.Service.ClienteService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +22,7 @@ public class ClienteController {
     private ClienteService service;
 
     @PostMapping
-    public ResponseEntity<ClienteResponseDTO> postCliente(@RequestBody ClienteRequestDTO cliente) {
+    public ResponseEntity<ClienteResponseDTO> postCliente(@RequestBody @Validated ClienteRequestDTO cliente) {
         try {
             return new ResponseEntity<>(service.adicionarCliente(cliente), HttpStatus.OK);
         } catch (Exception e) {
@@ -28,7 +31,7 @@ public class ClienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> putCliente(@RequestBody ClienteRequestDTO cliente, @PathVariable Integer id) {
+    public ResponseEntity<Void> putCliente(@RequestBody @Validated ClienteRequestDTO cliente, @PathVariable Integer id) {
         try {
             service.atualizarCliente(cliente, id);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -38,9 +41,9 @@ public class ClienteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ClienteResponseDTO>> getClientes() {
+    public ResponseEntity<Page<ClienteResponseDTO>> getClientes(Pageable pageable) {
         try {
-            return new ResponseEntity<>(service.buscarClientes(), HttpStatus.OK);
+            return new ResponseEntity<>(service.buscarClientes(pageable), HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

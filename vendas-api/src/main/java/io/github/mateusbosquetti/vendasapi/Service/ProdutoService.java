@@ -2,6 +2,8 @@ package io.github.mateusbosquetti.vendasapi.Service;
 
 import io.github.mateusbosquetti.vendasapi.DTO.Request.ProdutoRequestDTO;
 import io.github.mateusbosquetti.vendasapi.DTO.Response.ProdutoResponseDTO;
+import io.github.mateusbosquetti.vendasapi.DTO.Response.ProdutoResponseDTO;
+import io.github.mateusbosquetti.vendasapi.Entity.Produto;
 import io.github.mateusbosquetti.vendasapi.Entity.Produto;
 import io.github.mateusbosquetti.vendasapi.Repository.ProdutoRepository;
 import lombok.AllArgsConstructor;
@@ -19,12 +21,12 @@ public class ProdutoService {
     private ProdutoRepository repository;
 
     public ProdutoResponseDTO adicionarProduto(ProdutoRequestDTO produtoRequestDTO) {
-        return EntitytoDTO(repository.save(DTOtoEntity(produtoRequestDTO)));
+        return repository.save(produtoRequestDTO.toEntity()).toDto();
     }
 
     public void atualizarProduto(ProdutoRequestDTO produtoRequestDTO, Integer id) {
-        Produto produtoAntigo = repository.findById(id).orElseThrow(NoSuchElementException::new);
-        Produto produtoAtual = DTOtoEntity(produtoRequestDTO);
+        Produto produtoAntigo = buscarProdutoEntidadePeloId(id);
+        Produto produtoAtual = produtoRequestDTO.toEntity();
         produtoAtual.setId(id);
         produtoAtual.setDataCadastro(produtoAntigo.getDataCadastro());
 
@@ -34,38 +36,22 @@ public class ProdutoService {
     public List<ProdutoResponseDTO> buscarProdutos() {
         return repository.findAll()
                 .stream()
-                .map(this::EntitytoDTO)
+                .map(Produto::toDto)
                 .toList();
         //For each embutido
     }
 
     public ProdutoResponseDTO buscarProdutoPeloId(Integer id) {
-        return EntitytoDTO(repository.findById(id).orElseThrow(NoSuchElementException::new));
+        return repository.findById(id).orElseThrow(() -> new NoSuchElementException("Produto não encontrado")).toDto();
+    }
+
+    public Produto buscarProdutoEntidadePeloId(Integer id) {
+        return repository.findById(id).orElseThrow(() -> new NoSuchElementException("Produto não encontrado"));
     }
 
     public void excluirProduto(Integer id) {
         buscarProdutoPeloId(id);
         repository.deleteById(id);
-    }
-
-    public Produto DTOtoEntity(ProdutoRequestDTO produtoRequestDTO) {
-        Produto produtoEntidade = new Produto();
-        produtoEntidade.setNome(produtoRequestDTO.getNome());
-        produtoEntidade.setDescricao(produtoRequestDTO.getDescricao());
-        produtoEntidade.setPreco(produtoRequestDTO.getPreco());
-        produtoEntidade.setSku(produtoRequestDTO.getSku());
-
-        return produtoEntidade;
-    }
-
-    public ProdutoResponseDTO EntitytoDTO(Produto produto) {
-        return new ProdutoResponseDTO(
-                produto.getId(),
-                produto.getNome(),
-                produto.getDescricao(),
-                produto.getPreco(),
-                produto.getSku(),
-                produto.getDataCadastro());
     }
 
 }

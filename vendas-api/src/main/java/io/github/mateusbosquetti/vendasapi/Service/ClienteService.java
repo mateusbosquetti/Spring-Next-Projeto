@@ -7,6 +7,8 @@ import io.github.mateusbosquetti.vendasapi.Entity.Cliente;
 import io.github.mateusbosquetti.vendasapi.Entity.Cliente;
 import io.github.mateusbosquetti.vendasapi.Repository.ClienteRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,56 +21,34 @@ public class ClienteService {
     private ClienteRepository repository;
 
     public ClienteResponseDTO adicionarCliente(ClienteRequestDTO clienteRequestDTO) {
-        return EntitytoDTO(repository.save(DTOtoEntity(clienteRequestDTO)));
+        return repository.save(clienteRequestDTO.toEntity()).toDto();
     }
 
     public void atualizarCliente(ClienteRequestDTO clienteRequestDTO, Integer id) {
-        Cliente clienteAntigo = repository.findById(id).orElseThrow(NoSuchElementException::new);
-        Cliente clienteAtual = DTOtoEntity(clienteRequestDTO);
-        clienteAtual.setId(id);
-        clienteAtual.setDataCadastro(clienteAntigo.getDataCadastro());
+        Cliente clienteAntigo = buscarClienteEntidadePeloId(id);
+        Cliente clienteNovo = clienteRequestDTO.toEntity();
+        clienteNovo.setId(id);
+        clienteNovo.setDataCadastro(clienteAntigo.getDataCadastro());
 
-        repository.save(clienteAtual);
+        repository.save(clienteNovo);
     }
 
-    public List<ClienteResponseDTO> buscarClientes() {
-        return repository.findAll()
-                .stream()
-                .map(this::EntitytoDTO)
-                .toList();
+    public Page<ClienteResponseDTO> buscarClientes(Pageable pageable) {
+        return repository.findAll(pageable).map(Cliente::toDto);
         //For each embutido
     }
 
     public ClienteResponseDTO buscarClientePeloId(Integer id) {
-        return EntitytoDTO(repository.findById(id).orElseThrow(NoSuchElementException::new));
+        return repository.findById(id).orElseThrow(() -> new NoSuchElementException("Cliente não encontrado")).toDto();
+    }
+
+    public Cliente buscarClienteEntidadePeloId(Integer id) {
+        return repository.findById(id).orElseThrow(() -> new NoSuchElementException("Cliente não encontrado"));
     }
 
     public void excluirCliente(Integer id) {
         buscarClientePeloId(id);
         repository.deleteById(id);
-    }
-    
-    private Cliente DTOtoEntity (ClienteRequestDTO clienteRequestDTO) {
-        Cliente cliente = new Cliente();
-        cliente.setNome(clienteRequestDTO.getNome());
-        cliente.setCpf(clienteRequestDTO.getCpf());
-        cliente.setEmail(clienteRequestDTO.getEmail());
-        cliente.setNascimento(clienteRequestDTO.getNascimento());
-        cliente.setTelefone(clienteRequestDTO.getTelefone());
-        cliente.setEndereco(clienteRequestDTO.getEndereco());
-        return cliente;
-    }
-    
-    public ClienteResponseDTO EntitytoDTO (Cliente cliente) {
-        return new ClienteResponseDTO(
-                cliente.getId(),
-                cliente.getNascimento(),
-                cliente.getCpf(),
-                cliente.getNome(),
-                cliente.getEndereco(), 
-                cliente.getTelefone(),
-                cliente.getEmail(),
-                cliente.getDataCadastro());
     }
 
 }
