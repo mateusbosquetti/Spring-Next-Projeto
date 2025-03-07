@@ -53,24 +53,42 @@ export const CadastroProdutos: React.FC = () => {
                     setNome(data.nome)
                     setDescricao(data.descricao)
                     setCadastro(data.dataCadastro)
-                    setPreco(data.preco.toString()) // Converter para string
+                    setPreco(data.preco)
                 })
         }
     }, [idURL])
 
-    const handlePrecoChange = (valor: string) => {
-        setPreco(valor.toString());
+    const formatarValorMonetario = (valor: string): string => {
+        let numeros = valor.replace(/[^\d,]/g, "");
+
+        const temVirgula = numeros.includes(",");
+
+        let [parteInteira, parteDecimal] = numeros.split(",");
+
+        parteInteira = parteInteira
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+        if (parteDecimal) {
+            parteDecimal = parteDecimal.slice(0, 2);
+        }
+
+        return temVirgula ? `${parteInteira},${parteDecimal}` : parteInteira;
+    };
+
+    const removerMascaraValorMonetario = (valor: string): string => {
+        const numeros = valor.replace(/[^\d,]/g, "");
+        return numeros.replace(",", ".");
     };
 
     const submit = () => {
         const produto: Produto = {
             id,
             sku,
-            preco: converterEmBigDecimal(preco.toString()), // Converter para string antes de converter para BigDecimal
+            preco: removerMascaraValorMonetario(preco || ""),
             nome,
             descricao
         }
-    
+
         validationSchema.validate(produto).then(data => {
             setErrors({})
             if (id) {
@@ -93,7 +111,7 @@ export const CadastroProdutos: React.FC = () => {
         }).catch(error => {
             const field = error.path;
             const message = error.message;
-    
+
             setErrors({
                 [field]: message
             })
@@ -136,7 +154,10 @@ export const CadastroProdutos: React.FC = () => {
                 <Input
                     label="Preço: *"
                     columnClasses="is-half"
-                    onChange={e => setPreco(e.target.value)}
+                    onChange={e => {
+                        const precoFormatado = formatarValorMonetario(e.target.value);
+                        setPreco(precoFormatado)
+                    }}
                     value={preco}
                     placeholder="Insira o Preço do Produto"
                     id="inputPreco"
