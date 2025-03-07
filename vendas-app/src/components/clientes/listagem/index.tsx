@@ -103,20 +103,20 @@ export const ListagemClientes: React.FC = () => {
   const [lista, setLista] = useState<Cliente[]>([]);
 
   useEffect(() => {
-    setLista(result?.data || []);
+    setLista(result?.data.content || []);
   }, [result]);
 
   const handleEdit = (cliente: Cliente) => {
     console.log("Editar cliente:", cliente);
     const url = `/cadastros/clientes?id=${cliente.id}`;
-    router.push(url); // Redirecionar para a URL
+    router.push(url); 
   };
 
   const handleDelete = async (id: string) => {
     if (window.confirm("Tem certeza que deseja excluir este cliente?")) {
       try {
         await httpCliente.delete(`/api/clientes/${id}`);
-        // Atualiza a lista de clientes após a exclusão
+
         mutate();
       } catch (error) {
         console.error("Erro ao excluir cliente:", error);
@@ -126,14 +126,16 @@ export const ListagemClientes: React.FC = () => {
 
   return (
     <Layout titulo="Clientes">
-      <Link href="/cadastros/clientes">
-        <Button variant="contained" endIcon={<AddIcon />}>
-          Adicionar
-        </Button>
-      </Link>
+      <div className="mb-4">
+        <Link href="/cadastros/clientes">
+          <Button variant="contained" endIcon={<AddIcon />}>
+            Adicionar
+          </Button>
+        </Link>
+      </div>
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid
-          rows={lista.content}
+          rows={lista}
           columns={columns}
           initialState={{
             pagination: {
