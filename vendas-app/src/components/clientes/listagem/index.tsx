@@ -17,10 +17,13 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useRouter } from "next/navigation"; // Importar useRouter
+import { DeleteModal } from "components/common/modal"; // Importe o modal reutilizável
 
 const fetcher = (url: string) => httpCliente.get(url);
 
 export const ListagemClientes: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [clienteToDelete, setClienteToDelete] = useState<string | null>(null);
 
   const columns: GridColDef<Cliente>[] = [
     { field: 'id', headerName: 'ID', width: 50 },
@@ -79,7 +82,7 @@ export const ListagemClientes: React.FC = () => {
             </IconButton>
             <IconButton
               color="error"
-              onClick={() => handleDelete(params.row.id)}
+              onClick={() => handleOpenModal(params.row.id)}
             >
               <DeleteIcon />
             </IconButton>
@@ -109,17 +112,28 @@ export const ListagemClientes: React.FC = () => {
   const handleEdit = (cliente: Cliente) => {
     console.log("Editar cliente:", cliente);
     const url = `/cadastros/clientes?id=${cliente.id}`;
-    router.push(url); 
+    router.push(url);
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm("Tem certeza que deseja excluir este cliente?")) {
-      try {
-        await httpCliente.delete(`/api/clientes/${id}`);
+  const handleOpenModal = (id: string) => {
+    setClienteToDelete(id); // Define o ID do produto a ser excluído
+    setIsModalOpen(true); // Abre o modal
+  };
 
-        mutate();
+  const handleCloseModal = () => {
+    setIsModalOpen(false); // Fecha o modal
+    setClienteToDelete(null); // Limpa o ID do produto
+  };
+
+  const handleConfirmDelete = async () => {
+    if (clienteToDelete) {
+      try {
+        await httpCliente.delete(`/api/clientes/${clienteToDelete}`);
+        mutate(); // Atualiza a lista de produtos após a exclusão
       } catch (error) {
         console.error("Erro ao excluir cliente:", error);
+      } finally {
+        handleCloseModal(); // Fecha o modal após a exclusão
       }
     }
   };
@@ -148,6 +162,14 @@ export const ListagemClientes: React.FC = () => {
           disableRowSelectionOnClick
         />
       </Box>
+
+      <DeleteModal
+        open={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmDelete}
+        title="Confirmar Exclusão"
+        content="Tem certeza que deseja excluir este cliente? Esta ação não pode ser desfeita."
+      />
     </Layout>
   );
 };
