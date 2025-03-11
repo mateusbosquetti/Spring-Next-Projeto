@@ -1,40 +1,33 @@
 "use client"
 
 import React, { useEffect, useState } from 'react';
-import { Autocomplete } from '@mui/material';
-import { TextField } from '@mui/material';
-import { Stack } from '@mui/material';
+import { Autocomplete, TextField, Stack } from '@mui/material';
 import { Layout } from 'components';
 import { useClientService } from 'pasta/services';
-import useSWR from "swr";
-import { AxiosResponse } from 'axios';
 import { Cliente } from 'pasta/models/clientes';
-import { httpCliente } from 'pasta/http';
-
-const fetcher = (url: string) => httpCliente.get(url);
 
 export const Vendas: React.FC = () => {
-
-
-    const { data: result, error, mutate } = useSWR<AxiosResponse<Cliente[]>>(
-        "/api/clientes",
-        fetcher
-    );
-
+    const { listarCliente } = useClientService();
     const [lista, setLista] = useState<Cliente[]>([]);
+    const [value, setValue] = useState<Cliente | null>(null);
 
     useEffect(() => {
-        setLista(result?.data.content || []);
-    }, [result]);
+        const fetchClientes = async () => {
+            try {
+                const clientes = await listarCliente();
+                setLista(clientes);
+            } catch (error) {
+                console.error("Erro ao buscar clientes:", error);
+            }
+        };
+
+        fetchClientes();
+    }, [listarCliente]);
 
     const defaultProps = {
         options: lista,
-        getOptionLabel: (option: any) => option.nome,
+        getOptionLabel: (option: Cliente) => option.nome,
     };
-    const flatProps = {
-        options: lista.map((option) => option.nome),
-    };
-    const [value, setValue] = React.useState(null);
 
     return (
         <Layout titulo='Vendas'>
@@ -44,6 +37,7 @@ export const Vendas: React.FC = () => {
                     id="auto-complete"
                     autoComplete
                     includeInputInList
+                    value={value}
                     onChange={(event, newValue) => {
                         setValue(newValue);
                         console.log(newValue);
@@ -55,4 +49,4 @@ export const Vendas: React.FC = () => {
             </Stack>
         </Layout>
     );
-}
+};

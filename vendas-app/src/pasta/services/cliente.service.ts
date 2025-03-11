@@ -24,6 +24,11 @@ export const useClientService = () => {
     return response.data;
   };
 
+  const listarCliente = async (): Promise<Array<Cliente>> => {
+    const response: AxiosResponse<Array<Cliente>> = await httpCliente.get(resouceURL);
+    return response.data.content;
+  };
+
   const deletar = async (id: string): Promise<void> => {
     const url: string = `${resouceURL}/${id}`;
     await httpCliente.delete(url);
@@ -130,6 +135,7 @@ export const useClientService = () => {
     atualizar,
     carregarCliente,
     deletar,
-    mock
+    mock,
+    listarCliente
   };
 };
