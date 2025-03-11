@@ -79,7 +79,7 @@ export const ListagemProdutos: React.FC = () => {
                         </IconButton>
                         <IconButton
                             color="error"
-                            onClick={() => handleOpenModal(params.row.id)}
+                            onClick={() => handleOpenModal(params.row.id || "")}
                         >
                             <DeleteIcon />
                         </IconButton>
@@ -96,6 +96,7 @@ export const ListagemProdutos: React.FC = () => {
         fetcher
     );
 
+
     if (error) {
         return <Layout titulo="Produtos">Erro ao carregar os produtos.</Layout>;
     }
@@ -103,7 +104,7 @@ export const ListagemProdutos: React.FC = () => {
     const [lista, setLista] = useState<Produto[]>([]);
 
     useEffect(() => {
-        setLista(result?.data.content || []);
+        setLista(result?.data || []);
     }, [result]);
 
     const handleEdit = (produto: Produto) => {

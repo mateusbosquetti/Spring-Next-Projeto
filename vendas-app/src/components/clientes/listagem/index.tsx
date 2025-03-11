@@ -82,7 +82,7 @@ export const ListagemClientes: React.FC = () => {
             </IconButton>
             <IconButton
               color="error"
-              onClick={() => handleOpenModal(params.row.id)}
+              onClick={() => handleOpenModal(params.row.id || "")}
             >
               <DeleteIcon />
             </IconButton>
@@ -106,7 +106,8 @@ export const ListagemClientes: React.FC = () => {
   const [lista, setLista] = useState<Cliente[]>([]);
 
   useEffect(() => {
-    setLista(result?.data.content || []);
+    console.log(result?.data)
+    setLista(result?.data || []);
   }, [result]);
 
   const handleEdit = (cliente: Cliente) => {
