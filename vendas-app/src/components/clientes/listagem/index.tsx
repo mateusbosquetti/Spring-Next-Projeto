@@ -106,7 +106,6 @@ export const ListagemClientes: React.FC = () => {
   const [lista, setLista] = useState<Cliente[]>([]);
 
   useEffect(() => {
-    console.log(result?.data)
     setLista(result?.data || []);
   }, [result]);
 
