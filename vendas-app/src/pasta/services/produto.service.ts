@@ -30,6 +30,11 @@ export const useProdutoService = () => {
     await httpCliente.delete(url);
   };
 
+  const listarProduto = async (): Promise<Array<Produto>> => {
+    const response: AxiosResponse<Array<Produto>> = await httpCliente.get(resouceURL);
+    return response.data.content;
+  };
+
   const mock = async (): Promise<void> => {
     const produtos = [
       {
@@ -113,6 +118,7 @@ export const useProdutoService = () => {
     atualizar,
     carregarProduto,
     deletar,
+    listarProduto,
     mock
   };
 };
