@@ -24,7 +24,7 @@ export const Vendas: React.FC = () => {
     const [lista, setLista] = useState<Cliente[]>([]);
 
     useEffect(() => {
-        setLista(result?.data || []);
+        setLista(result?.data.content || []);
     }, [result]);
 
     const defaultProps = {

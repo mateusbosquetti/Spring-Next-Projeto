@@ -2,6 +2,7 @@ package io.github.mateusbosquetti.vendasapi.service;
 
 import io.github.mateusbosquetti.vendasapi.dto.request.ProdutoRequestDTO;
 import io.github.mateusbosquetti.vendasapi.dto.response.ProdutoResponseDTO;
+import io.github.mateusbosquetti.vendasapi.entity.Cliente;
 import io.github.mateusbosquetti.vendasapi.entity.Produto;
 import io.github.mateusbosquetti.vendasapi.repository.ProdutoRepository;
 import lombok.AllArgsConstructor;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -47,6 +49,16 @@ public class ProdutoService {
     public void excluirProduto(Integer id) {
         buscarProdutoPeloId(id);
         repository.deleteById(id);
+    }
+
+    public void mockarProduto(List<ProdutoRequestDTO> produtoRequestDTOS) {
+        List<Produto> produtos = new ArrayList<>();
+
+        produtoRequestDTOS.forEach(produtoRequestDTO -> {
+            produtos.add(produtoRequestDTO.toEntity());
+        });
+
+        repository.saveAll(produtos);
     }
 
 }

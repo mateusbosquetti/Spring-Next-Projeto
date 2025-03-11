@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/clientes")
 @AllArgsConstructor
@@ -22,6 +24,13 @@ public class ClienteController {
     @PostMapping
     public ResponseEntity<ClienteResponseDTO> postCliente(@RequestBody @Validated ClienteRequestDTO cliente) {
         return new ResponseEntity<>(service.adicionarCliente(cliente), HttpStatus.OK);
+    }
+
+    @PostMapping("/mock")
+    public ResponseEntity<Void> mockCliente(@RequestBody List<ClienteRequestDTO> clienteRequestDTOList) {
+        System.out.println("Entrou na controller");
+        service.mockarCliente(clienteRequestDTOList);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

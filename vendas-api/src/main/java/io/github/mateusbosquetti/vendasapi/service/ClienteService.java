@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -48,4 +50,14 @@ public class ClienteService {
         repository.deleteById(id);
     }
 
+    public void mockarCliente(List<ClienteRequestDTO> clienteRequestDTOList) {
+        System.out.println("Entrou na service");
+        List<Cliente> clientes = new ArrayList<>();
+
+        clienteRequestDTOList.forEach(clienteRequestDTO -> {
+            clientes.add(clienteRequestDTO.toEntity());
+        });
+
+        repository.saveAll(clientes);
+    }
 }

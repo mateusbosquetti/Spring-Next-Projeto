@@ -106,7 +106,7 @@ export const ListagemClientes: React.FC = () => {
   const [lista, setLista] = useState<Cliente[]>([]);
 
   useEffect(() => {
-    setLista(result?.data || []);
+    setLista(result?.data.content || []);
   }, [result]);
 
   const handleEdit = (cliente: Cliente) => {
@@ -146,6 +146,7 @@ export const ListagemClientes: React.FC = () => {
             Adicionar
           </Button>
         </Link>
+
       </div>
       <Box sx={{ height: 400, width: '100%' }}>
         <DataGrid

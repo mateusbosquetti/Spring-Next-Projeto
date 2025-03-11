@@ -288,6 +288,7 @@ export const CadastroClientes: React.FC = () => {
             <button className="button is-link is-light">Voltar</button>
           </Link>
         </div>
+        <button onClick={service.mock} className="button is-info is-inverted">Mockar</button>
       </div>
     </Layout>
   );

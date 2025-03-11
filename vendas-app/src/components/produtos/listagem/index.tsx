@@ -104,7 +104,7 @@ export const ListagemProdutos: React.FC = () => {
     const [lista, setLista] = useState<Produto[]>([]);
 
     useEffect(() => {
-        setLista(result?.data || []);
+        setLista(result?.data.content || []);
     }, [result]);
 
     const handleEdit = (produto: Produto) => {

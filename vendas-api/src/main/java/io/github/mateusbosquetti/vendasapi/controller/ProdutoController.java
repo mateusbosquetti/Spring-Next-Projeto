@@ -26,6 +26,12 @@ public class ProdutoController {
         return new ResponseEntity<>(service.adicionarProduto(produto), HttpStatus.OK);
     }
 
+    @PostMapping("/mock")
+    public ResponseEntity<Void> mockProduto(@RequestBody List<ProdutoRequestDTO> produtoRequestDTOS) {
+        service.mockarProduto(produtoRequestDTOS);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Void> putProduto(@RequestBody @Validated ProdutoRequestDTO produto, @PathVariable Integer id) {
         service.atualizarProduto(produto, id);
