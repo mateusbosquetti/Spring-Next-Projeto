@@ -1,33 +1,60 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Autocomplete,
   TextField,
-  Stack,
   Button,
   Box,
   IconButton,
+  FormControl,
+  InputLabel,
+  InputAdornment,
+  Input,
 } from "@mui/material";
 import { Layout } from "components";
 import { useClientService } from "pasta/services";
 import { useProdutoService } from "pasta/services";
 import { Cliente } from "pasta/models/clientes";
 import { Produto } from "pasta/models/produtos";
+import { ProdutoVenda } from "pasta/models/produtos/ProdutoVenda";
 import { AxiosResponse } from "axios";
-import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import useSWR, { mutate } from "swr";
+import useSWR from "swr";
 import { httpCliente } from "pasta/http";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import { DeleteModal } from "components/common";
 
 const fetcher = (url: string) => httpCliente.get(url);
 
 export const Vendas: React.FC = () => {
+  const { listarCliente } = useClientService();
+  const { listarProduto } = useProdutoService();
+  const [listaCliente, setListaCliente] = useState<Cliente[]>([]);
+  const [listaProduto, setListaProduto] = useState<Produto[]>([]);
+  const [listaFormaPagamento, setListaFormaPagamento] = useState<string[]>([
+    "Débito",
+    "Crédito",
+    "PIX",
+    "Dinheiro",
+    "Boleto",
+  ]);
+  const [listaProdutoPedido, setListaProdutoPedido] = useState<ProdutoVenda[]>(
+    []
+  );
+  const [sku, setSKU] = useState<string>("");
+  const [quantidade, setQuantidade] = useState<number>(1);
+  const [valueCliente, setValueCliente] = useState<Cliente | null>(null);
+  const [valueProduto, setValueProduto] = useState<Produto | null>(null);
+  const [valueFormaPagamento, setValueFormaPagamento] = useState<string | null>(
+    null
+  ); // Corrigido para null
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [produtoToDelete, setProdutoToDelete] = useState<string | null>(null);
 
-  const columns: GridColDef<Produto>[] = [
+  const columns: GridColDef<ProdutoVenda>[] = [
     { field: "id", headerName: "ID", width: 50 },
     {
       field: "nome",
@@ -36,13 +63,8 @@ export const Vendas: React.FC = () => {
       width: 200,
     },
     {
-      field: "descricao",
-      headerName: "Descrição",
-      width: 300,
-    },
-    {
       field: "preco",
-      headerName: "Preço",
+      headerName: "Preço Total",
       type: "number",
       sortable: true,
       align: "left",
@@ -50,21 +72,18 @@ export const Vendas: React.FC = () => {
       width: 150,
     },
     {
-      field: "sku",
-      headerName: "SKU",
-      sortable: false,
-      width: 150,
-    },
-    {
-      field: "dataCadastro",
-      headerName: "Data Cadastrado",
+      field: "quantidade",
+      headerName: "Quantidade",
+      headerAlign: "left",
+      align: "left",
+      type: "number",
       sortable: true,
       width: 150,
     },
     {
       field: "actions",
       headerName: "Ações",
-      width: 100,
+      width: 200,
       sortable: false,
       editable: false,
       filterable: false,
@@ -73,6 +92,18 @@ export const Vendas: React.FC = () => {
       renderCell: (params) => {
         return (
           <>
+            <IconButton
+              color="primary"
+              onClick={() => handleAddQuantity(params.row.id || "")}
+            >
+              <AddIcon />
+            </IconButton>
+            <IconButton
+              color="warning"
+              onClick={() => handleRemoveQuantity(params.row.id || "")}
+            >
+              <RemoveIcon />
+            </IconButton>
             <IconButton
               color="error"
               onClick={() => handleOpenModal(params.row.id || "")}
@@ -84,6 +115,36 @@ export const Vendas: React.FC = () => {
       },
     },
   ];
+
+  const handleAddQuantity = (id: string) => {
+    const updatedList = listaProdutoPedido.map((produto) => {
+      if (produto.id === id) {
+        const novaQuantidade = produto.quantidade + 1;
+        return {
+          ...produto,
+          quantidade: novaQuantidade,
+          preco: produto.precoUnitario * novaQuantidade,
+        };
+      }
+      return produto;
+    });
+    setListaProdutoPedido(updatedList);
+  };
+
+  const handleRemoveQuantity = (id: string) => {
+    const updatedList = listaProdutoPedido.map((produto) => {
+      if (produto.id === id && produto.quantidade > 1) {
+        const novaQuantidade = produto.quantidade - 1;
+        return {
+          ...produto,
+          quantidade: novaQuantidade,
+          preco: produto.precoUnitario * novaQuantidade,
+        };
+      }
+      return produto;
+    });
+    setListaProdutoPedido(updatedList);
+  };
 
   const handleOpenModal = (id: string) => {
     setProdutoToDelete(id);
@@ -97,13 +158,13 @@ export const Vendas: React.FC = () => {
 
   const handleConfirmDelete = async () => {
     if (produtoToDelete) {
-      try {
-        await httpCliente.delete(`/api/produtos/${produtoToDelete}`);
-      } catch (error) {
-        console.error("Erro ao excluir produto:", error);
-      } finally {
-        handleCloseModal();
-      }
+      const novaLista = listaProdutoPedido.filter(
+        (produto) => produto.id !== produtoToDelete
+      );
+
+      setListaProdutoPedido(novaLista);
+
+      handleCloseModal();
     }
   };
 
@@ -137,15 +198,6 @@ export const Vendas: React.FC = () => {
     setListaCliente(clienteResult?.data.content || []);
   }, [clienteResult]);
 
-  const { listarCliente } = useClientService();
-  const { listarProduto } = useProdutoService();
-  const [listaCliente, setListaCliente] = useState<Cliente[]>([]);
-  const [listaProduto, setListaProduto] = useState<Produto[]>([]);
-  const [listaProdutoPedido, setListaProdutoPedido] = useState<Produto[]>([]);
-  const [sku, setSKU] = useState<string>("");
-  const [valueCliente, setValueCliente] = useState<Cliente | null>(null);
-  const [valueProduto, setValueProduto] = useState<Produto | null>(null);
-
   const clienteProps = {
     options: listaCliente,
     getOptionLabel: (option: Cliente) => option.nome,
@@ -154,6 +206,36 @@ export const Vendas: React.FC = () => {
   const produtoProps = {
     options: listaProduto,
     getOptionLabel: (option: Produto) => option.nome,
+  };
+
+  const formaPagamentoProps = {
+    options: listaFormaPagamento,
+    getOptionLabel: (option: string) => option,
+  };
+
+  const handleAdicionarProduto = () => {
+    if (valueProduto) {
+      const produtoJaAdicionado = listaProdutoPedido.some(
+        (produto) => produto.id === valueProduto.id
+      );
+
+      if (!produtoJaAdicionado) {
+        const produtoAdd: ProdutoVenda = {
+          id: valueProduto.id,
+          nome: valueProduto.nome,
+          precoUnitario: valueProduto.preco,
+          preco: valueProduto.preco * quantidade,
+          quantidade: quantidade,
+        };
+
+        setListaProdutoPedido([...listaProdutoPedido, produtoAdd]);
+      } else {
+        console.log("Produto já adicionado ao pedido.");
+      }
+
+      setValueProduto(null);
+      setSKU("");
+    }
   };
 
   return (
@@ -217,10 +299,9 @@ export const Vendas: React.FC = () => {
 
         <div className="column is-one-third has-text-right">
           <Button
-            onClick={(e) => {
-              
-            }}
+            onClick={handleAdicionarProduto}
             variant="contained"
+            className="mt-2"
             color="primary"
           >
             ADICIONAR
@@ -242,6 +323,66 @@ export const Vendas: React.FC = () => {
           disableRowSelectionOnClick
         />
       </Box>
+
+      <div className="columns is-vcentered mt-2">
+        <div className="column is-two-thirds">
+          <div className="columns">
+            <div className="column is-half">
+              <Autocomplete
+                {...formaPagamentoProps}
+                id="auto-complete-forma-pagamento"
+                autoComplete
+                includeInputInList
+                value={valueFormaPagamento || null} // Garante que o valor nunca seja undefined
+                onChange={(event, newValue) => {
+                  setValueFormaPagamento(newValue || null); // Define como null se newValue for undefined
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Forma de Pagamento"
+                    variant="standard"
+                  />
+                )}
+              />
+            </div>
+
+            <div className="column is-half">
+              <FormControl variant="standard">
+                <InputLabel htmlFor="standard-adornment-amount">
+                  Preço Final
+                </InputLabel>
+                <Input
+                  id="standard-adornment-amount"
+                  startAdornment={
+                    <InputAdornment position="start">R$</InputAdornment>
+                  }
+                  disabled
+                />
+              </FormControl>
+            </div>
+          </div>
+        </div>
+
+        <div className="column is-one-third has-text-right">
+          <Button
+            onClick={handleAdicionarProduto}
+            variant="contained"
+            className="mt-4"
+            color="primary"
+          >
+            Salvar
+          </Button>
+        </div>
+      </div>
+
+      <DeleteModal
+        open={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmDelete}
+        title="Confirmar Exclusão"
+        content="Tem certeza que deseja excluir este produto? Esta ação não pode ser desfeita."
+      />
     </Layout>
   );
 };
