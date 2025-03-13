@@ -24,8 +24,8 @@ export const useClientService = () => {
     return response.data;
   };
 
-  const listarCliente = async (): Promise<Array<Cliente>> => {
-    const response: AxiosResponse<Array<Cliente>> = await httpCliente.get(resouceURL);
+  const listarCliente = async (): Promise<Cliente[]> => {
+    const response: AxiosResponse<Cliente[]> = await httpCliente.get(resouceURL);
     return response.data.content;
   };
 
