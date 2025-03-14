@@ -50,9 +50,19 @@ export const Vendas: React.FC = () => {
   const [valueProduto, setValueProduto] = useState<Produto | null>(null);
   const [valueFormaPagamento, setValueFormaPagamento] = useState<string | null>(
     null
-  ); // Corrigido para null
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [produtoToDelete, setProdutoToDelete] = useState<string | null>(null);
+  const [precoFinal, setPrecoFinal] = useState<number>(0);
+
+  // Atualiza o preço final sempre que a lista de produtos for alterada
+  useEffect(() => {
+    const total = listaProdutoPedido.reduce(
+      (acc, produto) => acc + produto.preco,
+      0
+    );
+    setPrecoFinal(total);
+  }, [listaProdutoPedido]);
 
   const columns: GridColDef<ProdutoVenda>[] = [
     { field: "id", headerName: "ID", width: 50 },
@@ -166,6 +176,25 @@ export const Vendas: React.FC = () => {
 
       handleCloseModal();
     }
+  };
+
+  const handleSalvarVenda = () => {
+    if (
+      !valueCliente ||
+      !valueFormaPagamento ||
+      listaProdutoPedido.length === 0
+    ) {
+      console.log("Preencha todos os campos antes de salvar.");
+      return;
+    }
+
+    const venda = {
+      cliente: valueCliente,
+      formaPagamento: valueFormaPagamento,
+      precoTotal: precoFinal,
+    };
+
+    console.log("Dados da venda:", venda);
   };
 
   // Produto
@@ -345,9 +374,9 @@ export const Vendas: React.FC = () => {
                 id="auto-complete-forma-pagamento"
                 autoComplete
                 includeInputInList
-                value={valueFormaPagamento || null} // Garante que o valor nunca seja undefined
+                value={valueFormaPagamento || null}
                 onChange={(event, newValue) => {
-                  setValueFormaPagamento(newValue || null); // Define como null se newValue for undefined
+                  setValueFormaPagamento(newValue || null);
                 }}
                 renderInput={(params) => (
                   <TextField
@@ -369,6 +398,7 @@ export const Vendas: React.FC = () => {
                   startAdornment={
                     <InputAdornment position="start">R$</InputAdornment>
                   }
+                  value={precoFinal.toFixed(2)} // Exibe o preço final com 2 casas decimais
                   disabled
                 />
               </FormControl>
@@ -378,7 +408,7 @@ export const Vendas: React.FC = () => {
 
         <div className="column is-one-third has-text-right">
           <Button
-            onClick={handleAdicionarProduto}
+            onClick={handleSalvarVenda} // Alterado para handleSalvarVenda
             variant="contained"
             className="mt-4"
             color="primary"
