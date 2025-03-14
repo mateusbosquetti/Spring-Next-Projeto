@@ -5,4 +5,7 @@ export interface Produto {
     preco?: string;
     sku?: string;
     dataCadastro?: string;
+    precoUnitario?: string;
+    precoVenda?: number;
+    quantidade?: number;
 }

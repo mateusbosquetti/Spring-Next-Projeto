@@ -17,7 +17,6 @@ import { useClientService } from "pasta/services";
 import { useProdutoService } from "pasta/services";
 import { Cliente } from "pasta/models/clientes";
 import { Produto } from "pasta/models/produtos";
-import { ProdutoVenda } from "pasta/models/produtos/ProdutoVenda";
 import { AxiosResponse } from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
 import useSWR from "swr";
@@ -41,9 +40,7 @@ export const Vendas: React.FC = () => {
     "Dinheiro",
     "Boleto",
   ]);
-  const [listaProdutoPedido, setListaProdutoPedido] = useState<ProdutoVenda[]>(
-    []
-  );
+  const [listaProdutoPedido, setListaProdutoPedido] = useState<Produto[]>([]);
   const [sku, setSKU] = useState<string>("");
   const [quantidade, setQuantidade] = useState<number>(1);
   const [valueCliente, setValueCliente] = useState<Cliente | null>(null);
@@ -64,7 +61,7 @@ export const Vendas: React.FC = () => {
     setPrecoFinal(total);
   }, [listaProdutoPedido]);
 
-  const columns: GridColDef<ProdutoVenda>[] = [
+  const columns: GridColDef<Produto>[] = [
     { field: "id", headerName: "ID", width: 50 },
     {
       field: "nome",
@@ -188,9 +185,25 @@ export const Vendas: React.FC = () => {
       return;
     }
 
+    // Criar uma lista de produtos com a quantidade correta
+    const produtosAgrupados: Produto[] = [];
+    listaProdutoPedido.forEach((produto) => {
+      for (let i = 0; i < produto.quantidade; i++) {
+        produtosAgrupados.push({
+          ...produto, // Copia todas as propriedades do produto
+          quantidade: 1, // Define a quantidade como 1 para cada item na lista
+        });
+      }
+    });
+
+    // Log da lista de produtos agrupados
+    console.log("Produtos agrupados:", produtosAgrupados);
+
+    // Criar o objeto venda
     const venda = {
       cliente: valueCliente,
       formaPagamento: valueFormaPagamento,
+      produtos: produtosAgrupados, // Adiciona a lista de produtos agrupados
       precoTotal: precoFinal,
     };
 
@@ -249,15 +262,19 @@ export const Vendas: React.FC = () => {
       );
 
       if (!produtoJaAdicionado) {
-        const produtoAdd: ProdutoVenda = {
-          id: valueProduto.id,
-          nome: valueProduto.nome,
-          precoUnitario: valueProduto.preco,
-          preco: valueProduto.preco * quantidade,
-          quantidade: quantidade,
-        };
+        //       const produtoAdd: ProdutoVenda = {
+        //         id: valueProduto.id,
+        //         nome: valueProduto.nome,
+        //         precoUnitario: valueProduto.preco,
+        //         preco: valueProduto.preco * quantidade,
+        //         quantidade: quantidade,
+        //       };
 
-        setListaProdutoPedido([...listaProdutoPedido, produtoAdd]);
+        valueProduto.precoUnitario = valueProduto.preco;
+        valueProduto.quantidade = quantidade;
+        valueProduto.precoVenda = valueProduto.preco * quantidade;
+
+        setListaProdutoPedido([...listaProdutoPedido, valueProduto]);
       } else {
         const updatedList = listaProdutoPedido.map((produto) => {
           if (produto.id === valueProduto.id) {
