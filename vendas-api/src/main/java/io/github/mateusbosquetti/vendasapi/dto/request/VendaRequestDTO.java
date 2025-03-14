@@ -17,18 +17,10 @@ public record VendaRequestDTO(
     public Venda toEntity(ClienteService clienteService, ProdutoService produtoService) {
         return Venda.builder()
                 .cliente(clienteService.buscarClienteEntidadePeloId(cliente_id))
-                .produtoList(converterParaLista(produto_idList, produtoService))
+                .produtoList(new ArrayList<>())
                 .precoTotal(precoTotal)
                 .build();
     }
 
-    private List<Produto> converterParaLista(List<Integer> produtoIdList, ProdutoService produtoService) {
-        List<Produto> produtoList = new ArrayList<>();
-        produto_idList.forEach(integer -> {
-            produtoList.add(
-                    produtoService.buscarProdutoEntidadePeloId(integer)
-            );
-        });
-        return produtoList;
-    }
+
 }

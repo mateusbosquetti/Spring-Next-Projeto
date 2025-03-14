@@ -28,7 +28,12 @@ public class Venda {
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
-    @ManyToMany(mappedBy = "vendaList")
+    @ManyToMany
+    @JoinTable(
+            name = "venda_produto",
+            joinColumns = @JoinColumn(name = "venda_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "produto_id", nullable = false)
+    )
     private List<Produto> produtoList;
 
     @Column(nullable = false)

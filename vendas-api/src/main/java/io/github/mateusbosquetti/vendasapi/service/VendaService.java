@@ -2,6 +2,7 @@ package io.github.mateusbosquetti.vendasapi.service;
 
 import io.github.mateusbosquetti.vendasapi.dto.request.VendaRequestDTO;
 import io.github.mateusbosquetti.vendasapi.dto.response.VendaResponseDTO;
+import io.github.mateusbosquetti.vendasapi.entity.Produto;
 import io.github.mateusbosquetti.vendasapi.entity.Venda;
 import io.github.mateusbosquetti.vendasapi.repository.VendaRepository;
 import lombok.AllArgsConstructor;
@@ -21,8 +22,23 @@ public class VendaService {
     private ClienteService clienteService;
     private ProdutoService produtoService;
 
+    private List<Produto> converterParaLista(List<Integer> produtoIdList) {
+        List<Produto> produtoList = new ArrayList<>();
+        produtoIdList.forEach(integer -> {
+            produtoList.add(
+                    produtoService.buscarProdutoEntidadePeloId(integer)
+            );
+        });
+        return produtoList;
+    }
+
     public VendaResponseDTO adicionarVenda(VendaRequestDTO vendaRequestDTO) {
-        return repository.save(vendaRequestDTO.toEntity(clienteService, produtoService)).toDto();
+        Venda venda = vendaRequestDTO.toEntity(clienteService, produtoService);
+        List<Produto> produtoList = converterParaLista(vendaRequestDTO.produto_idList());
+        produtoList.forEach(produto -> {
+            venda.getProdutoList().add(produto);
+        });
+        return repository.save(venda).toDto();
     }
 
     public void atualizarVenda(VendaRequestDTO vendaRequestDTO, Integer id) {

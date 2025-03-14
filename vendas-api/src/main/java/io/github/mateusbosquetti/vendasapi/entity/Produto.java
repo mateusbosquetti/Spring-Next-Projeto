@@ -37,12 +37,7 @@ public class Produto {
     @Column(name = "data_cadastro", nullable = false)
     private LocalDate dataCadastro;
 
-    @ManyToMany
-    @JoinTable(
-            name = "produto_venda",
-            joinColumns = @JoinColumn(name = "produto_id", nullable = false),
-            inverseJoinColumns = @JoinColumn(name = "venda_id", nullable = false)
-    )
+    @ManyToMany(mappedBy = "produtoList")
     private List<Venda> vendaList;
 
     @PrePersist
