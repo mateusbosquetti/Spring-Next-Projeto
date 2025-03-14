@@ -230,6 +230,18 @@ export const Vendas: React.FC = () => {
 
         setListaProdutoPedido([...listaProdutoPedido, produtoAdd]);
       } else {
+        const updatedList = listaProdutoPedido.map((produto) => {
+          if (produto.id === valueProduto.id) {
+            const novaQuantidade = produto.quantidade + 1;
+            return {
+              ...produto,
+              quantidade: novaQuantidade,
+              preco: produto.precoUnitario * novaQuantidade,
+            };
+          }
+          return produto;
+        });
+        setListaProdutoPedido(updatedList);
         console.log("Produto já adicionado ao pedido.");
       }
 
