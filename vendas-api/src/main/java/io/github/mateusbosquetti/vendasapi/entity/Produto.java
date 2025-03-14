@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 @Entity
@@ -35,6 +36,14 @@ public class Produto {
 
     @Column(name = "data_cadastro", nullable = false)
     private LocalDate dataCadastro;
+
+    @ManyToMany
+    @JoinTable(
+            name = "produto_venda",
+            joinColumns = @JoinColumn(name = "produto_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "venda_id", nullable = false)
+    )
+    private List<Venda> vendaList;
 
     @PrePersist
     public void prePersist() {
